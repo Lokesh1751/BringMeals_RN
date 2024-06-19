@@ -1,12 +1,12 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { Feather } from '@expo/vector-icons';
+import React from "react";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { Feather } from "@expo/vector-icons";
 
 const Footer = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.logoText}>
-        <Text style={{ color: 'white' }}>Bring</Text>Meals
+        <Text style={{ color: "white" }}>Bring</Text>Meals
       </Text>
       <Text style={styles.copyRightText}>
         Copyright © 2019 BringMeals. Delivering Moments!
@@ -31,34 +31,34 @@ const Footer = () => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#24262b',
-    flexDirection: 'column',
-    alignItems: 'center',
+    backgroundColor: "#24262b",
+    flexDirection: "column",
+    alignItems: "center",
     paddingVertical: 10,
   },
   logoText: {
     fontSize: 24,
-    fontWeight: 'bold',
-    color: '#C2410D',
+    fontWeight: "bold",
+    color: "#C2410D",
     paddingHorizontal: 10,
     marginBottom: 10,
   },
   copyRightText: {
     fontSize: 12,
-    color: '#ccc',
-    fontWeight: 'bold',
+    color: "#ccc",
+    fontWeight: "bold",
     paddingHorizontal: 10,
     marginBottom: 10,
   },
   iconContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
+    flexDirection: "row",
+    justifyContent: "center",
     marginTop: 10,
   },
   icon: {
     marginHorizontal: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
 

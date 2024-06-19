@@ -1,6 +1,11 @@
-import React, { useState } from 'react';
-import { View, TouchableOpacity, StyleSheet, ImageBackground } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import React, { useState } from "react";
+import {
+  View,
+  TouchableOpacity,
+  StyleSheet,
+  ImageBackground,
+} from "react-native";
+import Icon from "react-native-vector-icons/FontAwesome";
 
 const Slider = () => {
   const [index, setIndex] = useState(0); // State to track current slide index
@@ -40,10 +45,24 @@ const Slider = () => {
         style={styles.imageBackground}
       >
         <View style={styles.arrowContainer}>
-          <TouchableOpacity onPress={prev} style={{backgroundColor:"#C2410D",borderRadius:"50%",padding:10}}>
-            <Icon name="chevron-left" size={30} color="white"/>
+          <TouchableOpacity
+            onPress={prev}
+            style={{
+              backgroundColor: "#C2410D",
+              borderRadius: 100,
+              padding: 10,
+            }}
+          >
+            <Icon name="chevron-left" size={30} color="white" />
           </TouchableOpacity>
-          <TouchableOpacity onPress={next} style={{backgroundColor:"#C2410D",borderRadius:"50%",padding:10}}>
+          <TouchableOpacity
+            onPress={next}
+            style={{
+              backgroundColor: "#C2410D",
+              borderRadius: 100,
+              padding: 10,
+            }}
+          >
             <Icon name="chevron-right" size={30} color="white" />
           </TouchableOpacity>
         </View>
@@ -55,18 +74,18 @@ const Slider = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop:20,
+    marginTop: 20,
   },
   imageBackground: {
     flex: 1,
-    resizeMode: 'cover',
-    justifyContent: 'center',
+    resizeMode: "cover",
+    justifyContent: "center",
     height: 400,
-     // Adjust this height as per your requirement
+    // Adjust this height as per your requirement
   },
   arrowContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     paddingHorizontal: 6,
     marginTop: 20, // Adjust margin top as per your layout needs
   },

@@ -24,10 +24,14 @@ const QuickDel = () => {
         width={420}
         height={400}
       />
-      <View style={{display:'flex',padding:10}}>
-        <Text style={{color:"#C2410D",fontWeight:'bold',fontSize:23}}>Get the App</Text>
-        <Text style={{color:"black",fontWeight:'bold',fontSize:26}}>Limitless Convinience on-demand</Text>
-        <Text style={{fontWeight:'bold',fontSize:13}}>
+      <View style={{ display: "flex", padding: 10 }}>
+        <Text style={{ color: "#C2410D", fontWeight: "bold", fontSize: 23 }}>
+          Get the App
+        </Text>
+        <Text style={{ color: "black", fontWeight: "bold", fontSize: 26 }}>
+          Limitless Convinience on-demand
+        </Text>
+        <Text style={{ fontWeight: "bold", fontSize: 13 }}>
           BringMeals Restaurant Delivery makes it easy to satisfy your food
           cravings without the hassle of cooking or dining out. Whether you're
           planning a cozy night in, a quick lunch at the office, or a special

@@ -1,14 +1,12 @@
-import React from 'react';
-import { StyleSheet, Image, View, Text, ScrollView } from 'react-native'; // Import ScrollView for horizontal scrolling
-import { categories } from '../Data'; // Assuming 'categories' is an array of objects containing 'image' URIs
+import React from "react";
+import { StyleSheet, Image, View, Text, ScrollView } from "react-native"; // Import ScrollView for horizontal scrolling
+import { categories } from "../Data"; // Assuming 'categories' is an array of objects containing 'image' URIs
 
 const TopCategories = () => {
   return (
     <View style={styles.container}>
-      <Text style={styles.heading}>
-        Top Categories
-      </Text>
-      <View  style={styles.imageContainer}>
+      <Text style={styles.heading}>Top Categories</Text>
+      <View style={styles.imageContainer}>
         {categories.map((item, index) => (
           <Image
             key={index}
@@ -30,18 +28,18 @@ const styles = StyleSheet.create({
   },
   heading: {
     fontSize: 30,
-    fontWeight: 'bold',
-    color: '#C2410D',
-    textAlign: 'center',
+    fontWeight: "bold",
+    color: "#C2410D",
+    textAlign: "center",
     marginBottom: 20,
   },
   imageContainer: {
-    flexDirection: 'row',
+    flexDirection: "row",
     marginTop: 10,
     marginBottom: 20,
-    width:400,
-    gap:14,
-    flexWrap:'wrap'
+    width: 400,
+    gap: 14,
+    flexWrap: "wrap",
   },
   image: {
     width: 180, // Adjust width and height as per your requirement

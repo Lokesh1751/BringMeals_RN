@@ -1,19 +1,33 @@
 import React from "react";
-import { View, Text, TextInput, StyleSheet, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  StyleSheet,
+  TouchableOpacity,
+} from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons"; // Importing MaterialCommunityIcons from Expo
 
 const Menu = ({ navigation }: any) => {
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={() => navigation.navigate("Home")} style={styles.backButton}>
+      <TouchableOpacity
+        onPress={() => navigation.navigate("Home")}
+        style={styles.backButton}
+      >
         <MaterialCommunityIcons name="arrow-left" size={30} color="#ffffff" />
       </TouchableOpacity>
-      
+
       <View style={styles.backgroundImage}>
         <Text style={styles.title}>Get In Touch</Text>
         <View style={styles.contentContainer}>
           <View style={styles.infoContainer}>
-            <MaterialCommunityIcons name="phone" size={50} color="#ffffff" style={styles.icon} />
+            <MaterialCommunityIcons
+              name="phone"
+              size={50}
+              color="#ffffff"
+              style={styles.icon}
+            />
             <Text style={styles.infoTitle}>Phone</Text>
             <View>
               <Text style={styles.infoText}>Whatsapp Numbers:</Text>
@@ -23,7 +37,12 @@ const Menu = ({ navigation }: any) => {
             </View>
           </View>
           <View style={styles.infoContainer}>
-            <MaterialCommunityIcons name="email" size={50} color="#ffffff" style={styles.icon} />
+            <MaterialCommunityIcons
+              name="email"
+              size={50}
+              color="#ffffff"
+              style={styles.icon}
+            />
             <Text style={styles.infoTitle}>Email</Text>
             <View>
               <Text style={styles.infoText}>bgm@gmail.com</Text>
@@ -61,7 +80,6 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0, 0, 0, 0.7)",
   },
   backButton: {
-
     top: 30,
     left: 20,
     zIndex: 1, // Ensure the arrow icon is above other content

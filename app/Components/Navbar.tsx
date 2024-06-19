@@ -41,8 +41,18 @@ const Navbar = ({ nav }: any) => {
         </Text>
         {user ? (
           <View style={{ display: "flex", flexDirection: "row", gap: 10 }}>
-            <View style={{ backgroundColor: "#C2410D", padding: 10,borderRadius:100 }}>
-              <Text style={{color:"white",fontSize:20,fontWeight:"bold"}}>{user.email.slice(0, 1).toUpperCase()}</Text>
+            <View
+              style={{
+                backgroundColor: "#C2410D",
+                padding: 10,
+                borderRadius: 100,
+              }}
+            >
+              <Text
+                style={{ color: "white", fontSize: 20, fontWeight: "bold" }}
+              >
+                {user.email.slice(0, 1).toUpperCase()}
+              </Text>
             </View>
             <Text
               style={{
@@ -97,7 +107,12 @@ const Navbar = ({ nav }: any) => {
           <Icon name="comment" size={30} color="black" />
           FeedBack
         </Text>
-        <Text style={styles.menuItem} onPress={() => user? nav.navigate("cart"):Alert.alert("Login First!")}>
+        <Text
+          style={styles.menuItem}
+          onPress={() =>
+            user ? nav.navigate("cart") : Alert.alert("Login First!")
+          }
+        >
           <Icon name="cart" size={30} color="black" />
           Cart
         </Text>

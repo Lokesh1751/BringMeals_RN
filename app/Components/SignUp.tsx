@@ -1,5 +1,14 @@
 import React, { useState } from "react";
-import { View, TextInput, Button, Alert, Text, ImageBackground, StyleSheet, TouchableOpacity } from "react-native";
+import {
+  View,
+  TextInput,
+  Button,
+  Alert,
+  Text,
+  ImageBackground,
+  StyleSheet,
+  TouchableOpacity,
+} from "react-native";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { FIREBASE_AUTH } from "../../firebase.config";
 import { MaterialIcons as Icon } from "@expo/vector-icons"; // Importing MaterialIcons from Expo
@@ -40,7 +49,10 @@ const SignUp = ({ navigation }: any) => {
       style={styles.backgroundImage}
     >
       <View style={styles.container}>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          style={styles.backButton}
+        >
           <Icon name="arrow-back" size={30} color="#ffffff" />
         </TouchableOpacity>
         <Text style={styles.title}>Sign Up</Text>
