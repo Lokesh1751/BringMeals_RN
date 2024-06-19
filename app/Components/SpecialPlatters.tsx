@@ -18,7 +18,7 @@ const SpecialPlatters = () => {
       </Text>
      {specialOffersArray.map((item) => {
         return (
-          <View style={{ display: "flex", flexDirection: "row" ,gap:10,margin:8}}>
+          <View key={item.description} style={{ display: "flex", flexDirection: "row" ,gap:10,margin:8}}>
             <Image source={{ uri: item.imageUrl }} style={styles.img} />
             <View style={{display:'flex',flexDirection:'column',gap:14}}>
             <Text style={{color:"#C2410D",fontSize:20,fontWeight:'bold'}}>{item.offerName}</Text>
