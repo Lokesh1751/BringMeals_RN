@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, View, Alert } from "react-native";
-import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import { MaterialCommunityIcons as Icon } from "@expo/vector-icons"; // Import Expo MaterialCommunityIcons
 
 import { FIREBASE_AUTH } from "@/firebase.config";
 
 const Navbar = ({ nav }: any) => {
   const [vis, setvis] = useState(false);
   const [user, setUser] = useState<any | null>(null);
+
   const handleSignOut = async () => {
     try {
       await FIREBASE_AUTH.signOut(); // Sign out from Firebase
@@ -24,8 +25,9 @@ const Navbar = ({ nav }: any) => {
     });
     return unsubscribe;
   }, []);
+
   return (
-    <View style={{zIndex:50}}>
+    <View style={{ zIndex: 50 }}>
       <View style={styles.header}>
         <Icon
           name="menu"
@@ -38,18 +40,23 @@ const Navbar = ({ nav }: any) => {
           <Text style={styles.boldText}>Meals</Text>
         </Text>
         {user ? (
-          <Text
-            style={{
-              backgroundColor: "#C2410D",
-              padding: 10,
-              color: "white",
-              fontSize: 16,
-              fontWeight: "bold",
-            }}
-            onPress={handleSignOut}
-          >
-            Logout
-          </Text>
+          <View style={{ display: "flex", flexDirection: "row", gap: 10 }}>
+            <View style={{ backgroundColor: "#C2410D", padding: 10,borderRadius:100 }}>
+              <Text style={{color:"white",fontSize:20,fontWeight:"bold"}}>{user.email.slice(0, 1).toUpperCase()}</Text>
+            </View>
+            <Text
+              style={{
+                backgroundColor: "#C2410D",
+                padding: 10,
+                color: "white",
+                fontSize: 16,
+                fontWeight: "bold",
+              }}
+              onPress={handleSignOut}
+            >
+              Logout
+            </Text>
+          </View>
         ) : (
           <Text
             style={{
@@ -78,23 +85,23 @@ const Navbar = ({ nav }: any) => {
             onPress={() => setvis(!vis)}
           />
         </View>
-        <Text style={styles.menuItem} onPress={()=>nav.navigate("Signup")}>
+        <Text style={styles.menuItem} onPress={() => nav.navigate("Signup")}>
           <Icon name="account-circle" size={30} color="black" />
           SignUp
         </Text>
-        <Text style={styles.menuItem} onPress={()=>nav.navigate("Menu")}>
+        <Text style={styles.menuItem} onPress={() => nav.navigate("Menu")}>
           <Icon name="menu" size={30} color="black" />
           Menu
         </Text>
-        <Text style={styles.menuItem}>
+        <Text style={styles.menuItem} onPress={() => nav.navigate("feedback")}>
           <Icon name="comment" size={30} color="black" />
           FeedBack
         </Text>
-        <Text style={styles.menuItem}>
-          <Icon name="view-grid" size={30} color="black" />
-          Categories
+        <Text style={styles.menuItem} onPress={() => user? nav.navigate("cart"):Alert.alert("Login First!")}>
+          <Icon name="cart" size={30} color="black" />
+          Cart
         </Text>
-        <Text style={styles.menuItem}>
+        <Text style={styles.menuItem} onPress={() => nav.navigate("help")}>
           <Icon name="help-circle" size={32} color="black" />
           Help
         </Text>
@@ -102,6 +109,7 @@ const Navbar = ({ nav }: any) => {
     </View>
   );
 };
+
 const styles = StyleSheet.create({
   header: {
     position: "relative",
@@ -135,7 +143,7 @@ const styles = StyleSheet.create({
     padding: 20,
     display: "flex",
     gap: 30,
-   zIndex: 50,
+    zIndex: 50,
   },
   dropdownclose: {
     position: "absolute",
@@ -152,11 +160,12 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     marginTop: 30,
-  //  zIndex: 100,
+    //  zIndex: 100,
   },
   menuItem: {
     fontSize: 23,
     fontWeight: "bold",
   },
 });
+
 export default Navbar;

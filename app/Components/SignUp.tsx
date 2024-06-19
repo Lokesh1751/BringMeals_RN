@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import { View, TextInput, Button, Alert, Text, ImageBackground, StyleSheet } from "react-native";
+import { View, TextInput, Button, Alert, Text, ImageBackground, StyleSheet, TouchableOpacity } from "react-native";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { FIREBASE_AUTH } from "../../firebase.config";
+import { MaterialIcons as Icon } from "@expo/vector-icons"; // Importing MaterialIcons from Expo
 
 const SignUp = ({ navigation }: any) => {
   const [email, setEmail] = useState("");
@@ -39,7 +40,10 @@ const SignUp = ({ navigation }: any) => {
       style={styles.backgroundImage}
     >
       <View style={styles.container}>
-        <Text style={styles.title}>SignUp</Text>
+        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+          <Icon name="arrow-back" size={30} color="#ffffff" />
+        </TouchableOpacity>
+        <Text style={styles.title}>Sign Up</Text>
         <TextInput
           style={styles.input}
           placeholder="Enter Email"
@@ -87,6 +91,13 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0, 0, 0, 0.5)", // Black overlay with 50% opacity
     width: "100%",
     padding: 20,
+    position: "relative", // Ensure relative positioning for absolute elements
+  },
+  backButton: {
+    position: "absolute",
+    top: 40,
+    left: 20,
+    zIndex: 1, // Ensure it's above other content
   },
   title: {
     color: "#C2410D",
