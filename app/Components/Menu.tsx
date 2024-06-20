@@ -41,6 +41,8 @@ const Menu = ({ navigation }: any) => {
       );
 
       // Check if the cart document exists
+      Alert.alert("Success", "Item added to cart successfully!");
+      
       const cartSnapshot = await getDoc(cartRef);
 
       let updatedCartItems = [];
@@ -61,7 +63,7 @@ const Menu = ({ navigation }: any) => {
       setCartItems(updatedCartItems);
 
       // Confirmation or alert
-      Alert.alert("Success", "Item added to cart successfully!");
+     
     } catch (error) {
       console.error("Error adding item to cart:", error);
       Alert.alert(
