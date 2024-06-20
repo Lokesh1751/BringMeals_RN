@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -5,12 +6,9 @@ import {
   Alert,
   TouchableOpacity,
   ScrollView,
-  Button,
 } from "react-native";
-import React, { useEffect, useState } from "react";
-import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
-import { FIREBASE_AUTH, FIRESTORE_DB } from "@/firebase.config";
+import { useNavigation } from "@react-navigation/native";
 import {
   collection,
   query,
@@ -22,6 +20,7 @@ import {
   doc,
   DocumentData,
 } from "firebase/firestore";
+import { FIREBASE_AUTH, FIRESTORE_DB } from "@/firebase.config";
 
 // Define an interface for cart items
 interface CartItem {
@@ -34,6 +33,7 @@ interface CartItem {
 const Cart = () => {
   const navigation = useNavigation();
   const [cartItems, setCartItems] = useState<CartItem[]>([]); // Use CartItem[] here
+  const [loading, setLoading] = useState(true); // State to manage loading state
 
   useEffect(() => {
     fetchCartItems();
@@ -44,6 +44,7 @@ const Cart = () => {
       const currentUser = FIREBASE_AUTH.currentUser;
       if (!currentUser) {
         Alert.alert("Please log in first!");
+        setLoading(false); // Stop loading
         return;
       }
 
@@ -60,12 +61,14 @@ const Cart = () => {
       });
 
       setCartItems(fetchedCartItems);
+      setLoading(false); // Stop loading
     } catch (error) {
       console.error("Error fetching cart items:", error);
       Alert.alert(
         "Error",
         "Failed to fetch cart items. Please try again later."
       );
+      setLoading(false); // Stop loading in case of error
     }
   };
 
@@ -135,7 +138,9 @@ const Cart = () => {
         <Ionicons name="arrow-back" size={30} color="#C2410D" />
       </TouchableOpacity>
       <Text style={styles.heading}>Cart</Text>
-      {cartItems.length > 0 ? (
+      {loading ? ( // Show loading indicator
+        <Text style={styles.loadingText}>Loading...</Text>
+      ) : cartItems.length > 0 ? (
         <View style={styles.cartItemsContainer}>
           {cartItems.map((item: CartItem, index: number) => (
             <View key={index} style={styles.cartItem}>
@@ -151,22 +156,14 @@ const Cart = () => {
             </View>
           ))}
           <Text
-            style={{
-              fontSize: 17,
-              fontWeight: "bold",
-              backgroundColor: "#C2410D",
-              width: 130,
-              color: "white",
-              padding: 10,
-              textAlign: "center",
-            }}
+            style={styles.clearCartButton}
             onPress={() => clearcart()}
           >
             Clear Cart
           </Text>
         </View>
       ) : (
-        <Text style={styles.emptyCart}>Cart is Empty ! </Text>
+        <Text style={styles.emptyCart}>Cart is Empty!</Text>
       )}
     </ScrollView>
   );
@@ -189,6 +186,11 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 10,
     textAlign: "center",
+  },
+  loadingText: {
+    fontSize: 18,
+    textAlign: "center",
+    marginTop: 20,
   },
   cartItemsContainer: {
     marginTop: 10,
@@ -222,6 +224,17 @@ const styles = StyleSheet.create({
   },
   deleteButton: {
     padding: 5,
+  },
+  clearCartButton: {
+    fontSize: 17,
+    fontWeight: "bold",
+    backgroundColor: "#C2410D",
+    width: 130,
+    color: "white",
+    padding: 10,
+    textAlign: "center",
+    marginTop: 20,
+    alignSelf: "center",
   },
   emptyCart: {
     marginTop: 20,
