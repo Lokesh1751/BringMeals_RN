@@ -49,7 +49,7 @@ const Navbar = ({ nav }: any) => {
               }}
             >
               <Text
-                style={{ color: "white", fontSize: 20, fontWeight: "bold" }}
+                style={{ color: "white", fontSize: 18, fontWeight: "bold" }}
               >
                 {user.email.slice(0, 1).toUpperCase()}
               </Text>

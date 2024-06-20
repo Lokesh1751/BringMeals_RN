@@ -8,6 +8,8 @@ import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import "react-native-reanimated";
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+
 
 import { useColorScheme } from "@/hooks/useColorScheme";
 
@@ -29,6 +31,8 @@ export default function RootLayout() {
   if (!loaded) {
     return null;
   }
+  const Tab = createBottomTabNavigator();
+
 
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
