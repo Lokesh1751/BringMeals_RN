@@ -7,6 +7,7 @@ import {
   Alert,
   FlatList,
   TouchableOpacity,
+  ScrollView
 } from "react-native";
 import { FIREBASE_AUTH } from "@/firebase.config";
 import { FIRESTORE_DB } from "@/firebase.config";
@@ -78,7 +79,7 @@ const Feedbacks = ({ navigation }: any) => {
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <TouchableOpacity
         onPress={() => navigation.goBack()}
         style={styles.backButton}
@@ -146,7 +147,7 @@ const Feedbacks = ({ navigation }: any) => {
           </View>
         )}
       />
-    </View>
+    </ScrollView>
   );
 };
 
@@ -206,6 +207,7 @@ const styles = StyleSheet.create({
   ratingContainer: {
     flexDirection: "row",
   },
+  
 });
 
 export default Feedbacks;

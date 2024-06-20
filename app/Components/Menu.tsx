@@ -7,6 +7,7 @@ import {
   ScrollView,
   TouchableOpacity,
   Alert,
+  ImageBackground
 } from "react-native";
 import { nonVegetarianFoodItems, vegetarianFoodItems } from "../Data";
 import { Ionicons } from "@expo/vector-icons"; // Import Ionicons from Expo
@@ -42,7 +43,7 @@ const Menu = ({ navigation }: any) => {
 
       // Check if the cart document exists
       Alert.alert("Success", "Item added to cart successfully!");
-      
+
       const cartSnapshot = await getDoc(cartRef);
 
       let updatedCartItems = [];
@@ -63,7 +64,6 @@ const Menu = ({ navigation }: any) => {
       setCartItems(updatedCartItems);
 
       // Confirmation or alert
-     
     } catch (error) {
       console.error("Error adding item to cart:", error);
       Alert.alert(
@@ -75,6 +75,10 @@ const Menu = ({ navigation }: any) => {
 
   return (
     <ScrollView>
+      <ImageBackground
+      source={{ uri: "https://i.ibb.co/SVt8JKy/bg.jpg" }}
+      style={styles.backgroundImage}
+    >
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Ionicons name="arrow-back" size={40} color="#C2410D" />
@@ -102,6 +106,7 @@ const Menu = ({ navigation }: any) => {
               <MenuItem key={index} item={item} addToCart={addToCart} />
             ))}
       </View>
+      </ImageBackground>
     </ScrollView>
   );
 };
@@ -185,5 +190,10 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 16,
     fontWeight: "bold",
+  },
+  backgroundImage: {
+    flex: 1,
+    resizeMode: "cover",
+   
   },
 });
