@@ -225,7 +225,7 @@ const Cart = () => {
       )}
       {showSuccessMessage && (
         <View style={[styles.overlay]}>
-          <Text style={styles.overlayText}>Order placed successfully!</Text>
+          <Text style={[styles.overlayText,{color:"green",fontSize:18,fontWeight:'bold'}]}>Order placed successfully!</Text>
         </View>
       )}
     </View>
@@ -236,19 +236,20 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    marginTop: 40,
   },
   backButton: {
     position: "absolute",
-    top: 0,
+    top: 60,
     left: 20,
     zIndex: 1,
+    
   },
   heading: {
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 10,
     textAlign: "center",
+    marginTop:40
   },
   loadingText: {
     fontSize: 18,
