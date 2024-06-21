@@ -19,7 +19,8 @@ const Details = () => {
       </Text>
       <Text
         style={{
-          padding: 20,
+          paddingHorizontal: 15,
+          paddingVertical:5,
           fontSize: 23,
           fontWeight: "bold",
           color: "#C2410D",
@@ -36,7 +37,8 @@ const Details = () => {
       </Text>
       <Text
         style={{
-          padding: 20,
+          paddingHorizontal: 15,
+          paddingVertical:5,
           fontSize: 23,
           fontWeight: "bold",
           color: "#C2410D",
@@ -55,7 +57,8 @@ const Details = () => {
       </Text>
       <Text
         style={{
-          padding: 20,
+          paddingHorizontal: 15,
+          paddingVertical:5,
           fontSize: 23,
           fontWeight: "bold",
           color: "#C2410D",
@@ -73,7 +76,8 @@ const Details = () => {
       </Text>
       <Text
         style={{
-          padding: 20,
+          paddingHorizontal: 15,
+          paddingVertical:5,
           fontSize: 23,
           fontWeight: "bold",
           color: "#C2410D",
@@ -92,7 +96,8 @@ const Details = () => {
       </Text>
       <Text
         style={{
-          padding: 20,
+          paddingHorizontal: 15,
+          paddingVertical:5,
           fontSize: 23,
           fontWeight: "bold",
           color: "#C2410D",
@@ -110,7 +115,8 @@ const Details = () => {
       </Text>
       <Text
         style={{
-          padding: 20,
+          paddingHorizontal: 15,
+          paddingVertical:5,
           fontSize: 23,
           fontWeight: "bold",
           color: "#C2410D",
@@ -127,7 +133,8 @@ const Details = () => {
       </Text>
       <Text
         style={{
-          padding: 20,
+          paddingHorizontal: 15,
+          paddingVertical:5,
           fontSize: 23,
           fontWeight: "bold",
           color: "#C2410D",
@@ -145,7 +152,8 @@ const Details = () => {
       </Text>
       <Text
         style={{
-          padding: 20,
+          paddingHorizontal: 15,
+          paddingVertical:5,
           fontSize: 23,
           fontWeight: "bold",
           color: "#C2410D",
@@ -163,7 +171,8 @@ const Details = () => {
       </Text>
       <Text
         style={{
-          padding: 20,
+          paddingHorizontal: 15,
+          paddingVertical:5,
           fontSize: 23,
           fontWeight: "bold",
           color: "#C2410D",
@@ -180,7 +189,8 @@ const Details = () => {
       </Text>
       <Text
         style={{
-          padding: 20,
+          paddingHorizontal: 15,
+          paddingVertical:5,
           fontSize: 23,
           fontWeight: "bold",
           color: "#C2410D",

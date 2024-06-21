@@ -162,7 +162,7 @@ const styles = StyleSheet.create({
   },
   dropdownclose: {
     position: "absolute",
-    left: -2700,
+    left: -2800,
     backgroundColor: "white",
     width: "80%",
     height: 960,
