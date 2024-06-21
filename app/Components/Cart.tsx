@@ -32,8 +32,10 @@ interface CartItem {
 
 const Cart = () => {
   const navigation = useNavigation();
-  const [cartItems, setCartItems] = useState<CartItem[]>([]); // Use CartItem[] here
-  const [loading, setLoading] = useState(true); // State to manage loading state
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [showLoader, setShowLoader] = useState(false);
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
 
   useEffect(() => {
     fetchCartItems();
@@ -44,7 +46,7 @@ const Cart = () => {
       const currentUser = FIREBASE_AUTH.currentUser;
       if (!currentUser) {
         Alert.alert("Please log in first!");
-        setLoading(false); // Stop loading
+        setLoading(false);
         return;
       }
 
@@ -61,18 +63,18 @@ const Cart = () => {
       });
 
       setCartItems(fetchedCartItems);
-      setLoading(false); // Stop loading
+      setLoading(false);
     } catch (error) {
       console.error("Error fetching cart items:", error);
       Alert.alert(
         "Error",
         "Failed to fetch cart items. Please try again later."
       );
-      setLoading(false); // Stop loading in case of error
+      setLoading(false);
     }
   };
 
-  const deletefromKart = async (itemName: string, itemDescription: string) => {
+  const deleteFromCart = async (itemName: string, itemDescription: string) => {
     try {
       const currentUser = FIREBASE_AUTH.currentUser;
       const cartRef: DocumentReference<DocumentData> = doc(
@@ -81,24 +83,20 @@ const Cart = () => {
         (currentUser && currentUser.email) || ""
       );
 
-      // Check if the cart document exists
       const cartSnapshot = await getDoc(cartRef);
 
       if (cartSnapshot.exists()) {
         const existingItems: CartItem[] = cartSnapshot.data()?.items || [];
-        // Filter out the item with the specified name and description
         const updatedCartItems = existingItems.filter(
           (item) =>
             item.name !== itemName || item.description !== itemDescription
         );
 
-        // Update or create the cart document with the updated items
         await setDoc(cartRef, {
           userEmail: currentUser && currentUser.email,
           items: updatedCartItems,
         });
 
-        // Update local state to reflect the change
         setCartItems(updatedCartItems);
       }
     } catch (error) {
@@ -110,27 +108,74 @@ const Cart = () => {
     }
   };
 
-  const clearcart = async () => {
-    const currentUser = FIREBASE_AUTH.currentUser;
-    const cartRef: DocumentReference<DocumentData> = doc(
-      FIRESTORE_DB,
-      "carts",
-      (currentUser && currentUser.email) || ""
-    );
-    // Check if the cart document exists
-    const cartSnapshot = await getDoc(cartRef);
-    // Update or create the cart document with the updated items
-    await setDoc(cartRef, {
-      userEmail: currentUser && currentUser.email,
-      items: [],
-    });
+  const clearCart = async () => {
+    try {
+      const currentUser = FIREBASE_AUTH.currentUser;
+      const cartRef: DocumentReference<DocumentData> = doc(
+        FIRESTORE_DB,
+        "carts",
+        (currentUser && currentUser.email) || ""
+      );
 
-    // Update local state to reflect the change
-    setCartItems([]);
+      await setDoc(cartRef, {
+        userEmail: currentUser && currentUser.email,
+        items: [],
+      });
+
+      setCartItems([]);
+
+      setShowLoader(true);
+      setTimeout(() => {
+        setShowLoader(false);
+        setShowSuccessMessage(true);
+        setTimeout(() => {
+          setShowSuccessMessage(false);
+        }, 3000);
+      }, 3000);
+    } catch (error) {
+      console.error("Error clearing cart:", error);
+      Alert.alert(
+        "Error",
+        "Failed to clear cart. Please try again later."
+      );
+    }
+  };
+
+  const placeOrder = async () => {
+    try {
+      const currentUser = FIREBASE_AUTH.currentUser;
+      const cartRef: DocumentReference<DocumentData> = doc(
+        FIRESTORE_DB,
+        "carts",
+        (currentUser && currentUser.email) || ""
+      );
+
+      await setDoc(cartRef, {
+        userEmail: currentUser && currentUser.email,
+        items: [],
+      });
+
+      setCartItems([]);
+
+      setShowLoader(true);
+      setTimeout(() => {
+        setShowLoader(false);
+        setShowSuccessMessage(true);
+        setTimeout(() => {
+          setShowSuccessMessage(false);
+        }, 3000);
+      }, 3000);
+    } catch (error) {
+      console.error("Error placing order:", error);
+      Alert.alert(
+        "Error",
+        "Failed to place order. Please try again later."
+      );
+    }
   };
 
   return (
-    <ScrollView style={styles.container}>
+    <View style={styles.container}>
       <TouchableOpacity
         onPress={() => navigation.goBack()}
         style={styles.backButton}
@@ -138,34 +183,52 @@ const Cart = () => {
         <Ionicons name="arrow-back" size={30} color="#C2410D" />
       </TouchableOpacity>
       <Text style={styles.heading}>Cart</Text>
-      {loading ? ( // Show loading indicator
+      {loading ? (
         <Text style={styles.loadingText}>Loading...</Text>
       ) : cartItems.length > 0 ? (
-        <View style={styles.cartItemsContainer}>
+        <ScrollView>
           {cartItems.map((item: CartItem, index: number) => (
             <View key={index} style={styles.cartItem}>
               <Text style={styles.itemName}>{item.name}</Text>
               <Text style={styles.itemDescription}>{item.description}</Text>
               <Text style={styles.itemPrice}>Price: ${item.price}</Text>
               <TouchableOpacity
-                onPress={() => deletefromKart(item.name, item.description)}
+                onPress={() => deleteFromCart(item.name, item.description)}
                 style={styles.deleteButton}
               >
                 <Ionicons name="trash-bin" size={24} color="#FF6347" />
               </TouchableOpacity>
             </View>
           ))}
-          <Text
-            style={styles.clearCartButton}
-            onPress={() => clearcart()}
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              marginTop: 20,
+            }}
           >
-            Clear Cart
-          </Text>
-        </View>
+            <Text style={styles.button} onPress={() => clearCart()}>
+              Clear Cart
+            </Text>
+            <Text style={styles.button} onPress={() => placeOrder()}>
+              Place Order
+            </Text>
+          </View>
+        </ScrollView>
       ) : (
-        <Text style={styles.emptyCart}>Cart is Empty!</Text>
+       !showLoader && !showSuccessMessage && <Text style={styles.emptyCart}>Cart is Empty!</Text>
       )}
-    </ScrollView>
+      {showLoader && (
+        <View style={styles.overlay}>
+          <Text style={styles.overlayText}>Loading...</Text>
+        </View>
+      )}
+      {showSuccessMessage && (
+        <View style={[styles.overlay]}>
+          <Text style={styles.overlayText}>Order placed successfully!</Text>
+        </View>
+      )}
+    </View>
   );
 };
 
@@ -191,9 +254,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     textAlign: "center",
     marginTop: 20,
-  },
-  cartItemsContainer: {
-    marginTop: 10,
   },
   cartItem: {
     marginBottom: 15,
@@ -225,7 +285,7 @@ const styles = StyleSheet.create({
   deleteButton: {
     padding: 5,
   },
-  clearCartButton: {
+  button: {
     fontSize: 17,
     fontWeight: "bold",
     backgroundColor: "#C2410D",
@@ -233,8 +293,18 @@ const styles = StyleSheet.create({
     color: "white",
     padding: 10,
     textAlign: "center",
-    marginTop: 20,
+    marginBottom: 40,
     alignSelf: "center",
+  },
+  overlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0, 0, 0, 0.2)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  overlayText: {
+    fontSize: 20,
+    color: "#fff",
   },
   emptyCart: {
     marginTop: 20,
