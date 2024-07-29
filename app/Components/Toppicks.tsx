@@ -1,29 +1,40 @@
 import React from "react";
-import { StyleSheet, Text, View, ImageBackground } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  ImageBackground,
+  FlatList,
+} from "react-native";
 import { topPicks } from "../Data";
 
 const Toppicks = () => {
   return (
     <View style={styles.container}>
-      <Text style={styles.heading}>Top Picks</Text>
-      {topPicks.map((item, index) => (
-        <ImageBackground
-          key={index}
-          source={{ uri: item.img }}
-          style={styles.imageBackground}
-          imageStyle={styles.image}
-          blurRadius={2}
-        >
-          <View style={styles.infoContainer}>
-            <View style={styles.titleContainer}>
-              <Text style={styles.title}>{item.title}</Text>
-            </View>
-            <View style={styles.priceContainer}>
-              <Text style={styles.price}>{item.price}</Text>
-            </View>
-          </View>
-        </ImageBackground>
-      ))}
+      <FlatList
+        data={topPicks}
+        keyExtractor={(item) => item.title.toString()}
+        renderItem={({ item }: any) => {
+          return (
+            <ImageBackground
+              source={{ uri: item.img }}
+              style={styles.imageBackground}
+              imageStyle={styles.image}
+              blurRadius={2}
+            >
+              <View style={styles.infoContainer}>
+                <View style={styles.titleContainer}>
+                  <Text style={styles.title}>{item.title}</Text>
+                </View>
+                <View style={styles.priceContainer}>
+                  <Text style={styles.price}>{item.price}</Text>
+                </View>
+              </View>
+            </ImageBackground>
+          );
+        }}
+        ListHeaderComponent={<Text style={styles.heading}>Top Picks</Text>}
+      />
     </View>
   );
 };
@@ -38,6 +49,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#C2410D",
     marginBottom: 20,
+    textAlign: "center",
   },
   imageBackground: {
     width: 350,

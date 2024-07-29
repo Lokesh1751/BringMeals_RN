@@ -50,7 +50,7 @@ const SignUp = ({ navigation }: any) => {
     >
       <View style={styles.container}>
         <TouchableOpacity
-          onPress={() => navigation.goBack()}
+          onPress={() => navigation.navigate("Home")}
           style={styles.backButton}
         >
           <Icon name="arrow-back" size={30} color="#ffffff" />

@@ -7,10 +7,11 @@ import {
   ScrollView,
   TouchableOpacity,
   Alert,
-  ImageBackground
+  ImageBackground,
+  FlatList,
 } from "react-native";
 import { nonVegetarianFoodItems, vegetarianFoodItems } from "../Data";
-import { Ionicons } from "@expo/vector-icons"; // Import Ionicons from Expo
+import { Ionicons } from "@expo/vector-icons";
 import { FIRESTORE_DB, FIREBASE_AUTH } from "@/firebase.config";
 import {
   setDoc,
@@ -22,26 +23,22 @@ import {
 
 const Menu = ({ navigation }: any) => {
   const [menu, setMenu] = useState("veg");
-  const [cartItems, setCartItems] = useState<any[]>([]); // State to manage cart items
+  const [cartItems, setCartItems] = useState<any[]>([]);
 
-  // Function to handle adding item to cart
   const addToCart = async (item: any) => {
     try {
-      // Ensure user is logged in
       const currentUser = FIREBASE_AUTH.currentUser;
       if (!currentUser) {
         Alert.alert("Please log in first!");
         return;
       }
 
-      // Reference to user's cart document
       const cartRef: DocumentReference<DocumentData> = doc(
         FIRESTORE_DB,
         "carts",
         currentUser.email || ""
       );
 
-      // Check if the cart document exists
       Alert.alert("Success", "Item added to cart successfully!");
 
       const cartSnapshot = await getDoc(cartRef);
@@ -54,16 +51,12 @@ const Menu = ({ navigation }: any) => {
         updatedCartItems = [item];
       }
 
-      // Update or create the cart document
       await setDoc(cartRef, {
         userEmail: currentUser.email,
         items: updatedCartItems,
       });
 
-      // Update local state or any other logic as needed
       setCartItems(updatedCartItems);
-
-      // Confirmation or alert
     } catch (error) {
       console.error("Error adding item to cart:", error);
       Alert.alert(
@@ -76,36 +69,35 @@ const Menu = ({ navigation }: any) => {
   return (
     <ScrollView>
       <ImageBackground
-      source={{ uri: "https://i.ibb.co/SVt8JKy/bg.jpg" }}
-      style={styles.backgroundImage}
-    >
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Ionicons name="arrow-back" size={40} color="#C2410D" />
-        </TouchableOpacity>
-        <Text
-          style={menu === "veg" ? styles.clicked : styles.normal}
-          onPress={() => setMenu("veg")}
-        >
-          Veg Menu
-        </Text>
-        <Text
-          style={menu === "nonveg" ? styles.clicked : styles.normal}
-          onPress={() => setMenu("nonveg")}
-        >
-          Non Veg Menu
-        </Text>
-      </View>
+        source={{ uri: "https://i.ibb.co/SVt8JKy/bg.jpg" }}
+        style={styles.backgroundImage}
+      >
+        <View style={styles.header}>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <Ionicons name="arrow-back" size={40} color="#C2410D" />
+          </TouchableOpacity>
+          <Text
+            style={menu === "veg" ? styles.clicked : styles.normal}
+            onPress={() => setMenu("veg")}
+          >
+            Veg Menu
+          </Text>
+          <Text
+            style={menu === "nonveg" ? styles.clicked : styles.normal}
+            onPress={() => setMenu("nonveg")}
+          >
+            Non Veg Menu
+          </Text>
+        </View>
 
-      <View style={styles.menuContainer}>
-        {menu === "veg"
-          ? vegetarianFoodItems.map((item, index) => (
-              <MenuItem key={index} item={item} addToCart={addToCart} />
-            ))
-          : nonVegetarianFoodItems.map((item, index) => (
-              <MenuItem key={index} item={item} addToCart={addToCart} />
-            ))}
-      </View>
+        <View style={styles.menuContainer}>
+          <FlatList
+            renderItem={({ item }) => (
+              <MenuItem item={item} addToCart={addToCart} />
+            )}
+            data={menu === "veg" ? vegetarianFoodItems : nonVegetarianFoodItems}
+          />
+        </View>
       </ImageBackground>
     </ScrollView>
   );
@@ -194,6 +186,5 @@ const styles = StyleSheet.create({
   backgroundImage: {
     flex: 1,
     resizeMode: "cover",
-   
   },
 });

@@ -1,20 +1,27 @@
 import React from "react";
-import { StyleSheet, Image, View, Text, ScrollView } from "react-native"; // Import ScrollView for horizontal scrolling
-import { categories } from "../Data"; // Assuming 'categories' is an array of objects containing 'image' URIs
-
+import { StyleSheet, Image, View, Text, FlatList } from "react-native";
+import { categories } from "../Data";
 const TopCategories = () => {
   return (
     <View style={styles.container}>
-      <Text style={styles.heading}>Top Categories</Text>
       <View style={styles.imageContainer}>
-        {categories.map((item, index) => (
-          <Image
-            key={index}
-            source={{ uri: item.image }}
-            style={styles.image}
-            resizeMode="cover"
-          />
-        ))}
+        <FlatList
+          renderItem={({ item }: any) => {
+            return (
+              <Image
+                source={{ uri: item.image }}
+                style={styles.image}
+                resizeMode="cover"
+              />
+            );
+          }}
+          data={categories}
+          numColumns={2}
+          columnWrapperStyle={styles.row}
+          ListHeaderComponent={
+            <Text style={styles.heading}>Top Categories</Text>
+          }
+        />
       </View>
     </View>
   );
@@ -46,6 +53,9 @@ const styles = StyleSheet.create({
     height: 100,
     marginHorizontal: 5, // Add spacing between images
     borderRadius: 10, // Optional: Add border radius
+  },
+  row: {
+    justifyContent: "space-between",
   },
 });
 

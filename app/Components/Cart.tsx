@@ -5,7 +5,9 @@ import {
   View,
   Alert,
   TouchableOpacity,
-  ScrollView,
+  ActivityIndicator,
+  Image,
+  FlatList,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
@@ -22,7 +24,6 @@ import {
 } from "firebase/firestore";
 import { FIREBASE_AUTH, FIRESTORE_DB } from "@/firebase.config";
 
-// Define an interface for cart items
 interface CartItem {
   description: string;
   imageUrl: string;
@@ -127,17 +128,10 @@ const Cart = () => {
       setShowLoader(true);
       setTimeout(() => {
         setShowLoader(false);
-        setShowSuccessMessage(true);
-        setTimeout(() => {
-          setShowSuccessMessage(false);
-        }, 3000);
       }, 3000);
     } catch (error) {
       console.error("Error clearing cart:", error);
-      Alert.alert(
-        "Error",
-        "Failed to clear cart. Please try again later."
-      );
+      Alert.alert("Error", "Failed to clear cart. Please try again later.");
     }
   };
 
@@ -167,12 +161,26 @@ const Cart = () => {
       }, 3000);
     } catch (error) {
       console.error("Error placing order:", error);
-      Alert.alert(
-        "Error",
-        "Failed to place order. Please try again later."
-      );
+      Alert.alert("Error", "Failed to place order. Please try again later.");
     }
   };
+
+  const renderItem = ({ item }: { item: CartItem }) => (
+    <View style={styles.cartItem}>
+      <Image source={{ uri: item.imageUrl }} style={styles.itemImage} />
+      <View style={styles.itemDetails}>
+        <Text style={styles.itemName}>{item.name}</Text>
+        <Text style={styles.itemDescription}>{item.description}</Text>
+        <Text style={styles.itemPrice}>Price: ${item.price}</Text>
+      </View>
+      <TouchableOpacity
+        onPress={() => deleteFromCart(item.name, item.description)}
+        style={styles.deleteButton}
+      >
+        <Ionicons name="trash-bin" size={24} color="#FF6347" />
+      </TouchableOpacity>
+    </View>
+  );
 
   return (
     <View style={styles.container}>
@@ -184,48 +192,58 @@ const Cart = () => {
       </TouchableOpacity>
       <Text style={styles.heading}>Cart</Text>
       {loading ? (
-        <Text style={styles.loadingText}>Loading...</Text>
+        <View style={styles.centered}>
+          <ActivityIndicator size="large" color="#C2410D" />
+        </View>
       ) : cartItems.length > 0 ? (
-        <ScrollView>
-          {cartItems.map((item: CartItem, index: number) => (
-            <View key={index} style={styles.cartItem}>
-              <Text style={styles.itemName}>{item.name}</Text>
-              <Text style={styles.itemDescription}>{item.description}</Text>
-              <Text style={styles.itemPrice}>Price: ${item.price}</Text>
-              <TouchableOpacity
-                onPress={() => deleteFromCart(item.name, item.description)}
-                style={styles.deleteButton}
-              >
-                <Ionicons name="trash-bin" size={24} color="#FF6347" />
-              </TouchableOpacity>
-            </View>
-          ))}
+        <>
+          <FlatList
+            data={cartItems}
+            renderItem={renderItem}
+            keyExtractor={(item) => item.name + item.description}
+            contentContainerStyle={{ flexGrow: 1 }}
+          />
           <View
             style={{
               flexDirection: "row",
               justifyContent: "space-between",
               marginTop: 20,
+              marginBottom: 20,
             }}
           >
-            <Text style={styles.button} onPress={() => clearCart()}>
-              Clear Cart
-            </Text>
-            <Text style={styles.button} onPress={() => placeOrder()}>
-              Place Order
-            </Text>
+            <TouchableOpacity onPress={clearCart} style={styles.button}>
+              <Text style={{ color: "white", fontWeight: "bold" }}>
+                Clear Cart
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={placeOrder} style={styles.button}>
+              <Text style={{ color: "white", fontWeight: "bold" }}>
+                Place Order
+              </Text>
+            </TouchableOpacity>
           </View>
-        </ScrollView>
+        </>
       ) : (
-       !showLoader && !showSuccessMessage && <Text style={styles.emptyCart}>Cart is Empty!</Text>
+        !showLoader &&
+        !showSuccessMessage && (
+          <Text style={styles.emptyCart}>Cart is Empty!</Text>
+        )
       )}
       {showLoader && (
         <View style={styles.overlay}>
-          <Text style={styles.overlayText}>Loading...</Text>
+          <ActivityIndicator size="large" color="#C2410D" />
         </View>
       )}
       {showSuccessMessage && (
-        <View style={[styles.overlay]}>
-          <Text style={[styles.overlayText,{color:"green",fontSize:18,fontWeight:'bold'}]}>Order placed successfully!</Text>
+        <View style={styles.overlay}>
+          <Text
+            style={[
+              styles.overlayText,
+              { color: "green", fontSize: 18, fontWeight: "bold" },
+            ]}
+          >
+            Order placed successfully!
+          </Text>
         </View>
       )}
     </View>
@@ -242,19 +260,18 @@ const styles = StyleSheet.create({
     top: 60,
     left: 20,
     zIndex: 1,
-    
   },
   heading: {
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 10,
     textAlign: "center",
-    marginTop:40
+    marginTop: 40,
   },
-  loadingText: {
-    fontSize: 18,
-    textAlign: "center",
-    marginTop: 20,
+  centered: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
   cartItem: {
     marginBottom: 15,
@@ -294,23 +311,32 @@ const styles = StyleSheet.create({
     color: "white",
     padding: 10,
     textAlign: "center",
-    marginBottom: 40,
-    alignSelf: "center",
+    marginBottom: 10,
+    alignItems: "center",
+    justifyContent: "center",
   },
   overlay: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(0, 0, 0, 0.2)",
+    flex: 1,
     justifyContent: "center",
     alignItems: "center",
   },
   overlayText: {
     fontSize: 20,
-    color: "#fff",
+    color: "#C2410D",
   },
   emptyCart: {
     marginTop: 20,
     textAlign: "center",
     fontSize: 20,
+  },
+  itemDetails: {
+    flex: 1,
+  },
+  itemImage: {
+    width: 100,
+    height: 100,
+    borderRadius: 10,
+    marginRight: 10,
   },
 });
 

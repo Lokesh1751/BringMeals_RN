@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Image, StyleSheet, Text, View } from "react-native";
+import { Image, StyleSheet, Text, View, FlatList } from "react-native";
 import { mealData, pizza, salad, chicken } from "../Data";
 
 const OurMeal = () => {
@@ -52,17 +52,21 @@ const OurMeal = () => {
           Salad
         </Text>
       </View>
-      <View style={styles.itemsContainer}>
-        {data.map((item) => (
-          <View key={item.id} style={styles.itemContainer}>
+      <FlatList
+        data={data}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={({ item }) => (
+          <View style={styles.itemContainer}>
             <Image source={{ uri: item.image }} style={styles.image} />
             <View style={styles.textContainer}>
               <Text style={styles.name}>{item.name}</Text>
               <Text style={styles.price}>{item.price}</Text>
             </View>
           </View>
-        ))}
-      </View>
+        )}
+        numColumns={2}
+        columnWrapperStyle={styles.row}
+      />
     </View>
   );
 };
@@ -100,14 +104,12 @@ const styles = StyleSheet.create({
     color: "white",
     borderColor: "#C2410D",
   },
-  itemsContainer: {
-    flexDirection: "row",
-    flexWrap: "wrap",
+  row: {
     justifyContent: "space-between",
   },
   itemContainer: {
-    width: "48%",
-    marginBottom: 20,
+    flex: 1,
+    margin: 5,
     backgroundColor: "#F5F5F5",
     borderRadius: 10,
     padding: 10,

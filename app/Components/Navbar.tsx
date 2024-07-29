@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, View, Alert } from "react-native";
-import { MaterialCommunityIcons as Icon } from "@expo/vector-icons"; // Import Expo MaterialCommunityIcons
+import { MaterialCommunityIcons as Icon } from "@expo/vector-icons";
+import * as Animatable from "react-native-animatable";
 
 import { FIREBASE_AUTH } from "@/firebase.config";
 
@@ -82,12 +83,17 @@ const Navbar = ({ nav }: any) => {
           </Text>
         )}
       </View>
-      <View style={vis ? styles.dropdown : styles.dropdownclose}>
+      <Animatable.View
+        animation={vis ? "slideInLeft" : "slideOutRight"}
+        duration={300}
+        style={vis ? styles.dropdown : styles.dropdownclosed}
+      >
         <View style={styles.dropdownHeader}>
           <Text style={styles.logoText}>
             Bring
             <Text style={styles.boldText}>Meals</Text>
           </Text>
+
           <Icon
             name="close"
             size={30}
@@ -95,6 +101,7 @@ const Navbar = ({ nav }: any) => {
             onPress={() => setvis(!vis)}
           />
         </View>
+
         <Text style={styles.menuItem} onPress={() => nav.navigate("Signup")}>
           <Icon name="account-circle" size={30} color="black" />
           SignUp
@@ -120,7 +127,7 @@ const Navbar = ({ nav }: any) => {
           <Icon name="help-circle" size={32} color="black" />
           Help
         </Text>
-      </View>
+      </Animatable.View>
     </View>
   );
 };
@@ -160,7 +167,7 @@ const styles = StyleSheet.create({
     gap: 30,
     zIndex: 50,
   },
-  dropdownclose: {
+  dropdownclosed: {
     position: "absolute",
     left: -2800,
     backgroundColor: "white",
@@ -175,7 +182,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     marginTop: 30,
-    //  zIndex: 100,
   },
   menuItem: {
     fontSize: 23,
