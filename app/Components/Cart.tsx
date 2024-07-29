@@ -8,6 +8,8 @@ import {
   ActivityIndicator,
   Image,
   FlatList,
+  Modal,
+  TextInput,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
@@ -18,11 +20,12 @@ import {
   getDocs,
   setDoc,
   getDoc,
-  DocumentReference,
+  addDoc,
   doc,
   DocumentData,
 } from "firebase/firestore";
 import { FIREBASE_AUTH, FIRESTORE_DB } from "@/firebase.config";
+import ConfettiCannon from "react-native-confetti-cannon";
 
 interface CartItem {
   description: string;
@@ -37,6 +40,9 @@ const Cart = () => {
   const [loading, setLoading] = useState(true);
   const [showLoader, setShowLoader] = useState(false);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+  const [totalPrice, setTotalPrice] = useState(0);
+  const [showModal, setShowModal] = useState(false);
+  const [address, setAddress] = useState("");
 
   useEffect(() => {
     fetchCartItems();
@@ -45,7 +51,7 @@ const Cart = () => {
   const fetchCartItems = async () => {
     try {
       const currentUser = FIREBASE_AUTH.currentUser;
-      if (!currentUser) {
+      if (!currentUser || !currentUser.email) {
         Alert.alert("Please log in first!");
         setLoading(false);
         return;
@@ -78,11 +84,14 @@ const Cart = () => {
   const deleteFromCart = async (itemName: string, itemDescription: string) => {
     try {
       const currentUser = FIREBASE_AUTH.currentUser;
-      const cartRef: DocumentReference<DocumentData> = doc(
-        FIRESTORE_DB,
-        "carts",
-        (currentUser && currentUser.email) || ""
-      );
+      const email = currentUser?.email;
+
+      if (!email) {
+        Alert.alert("Error", "User not authenticated.");
+        return;
+      }
+
+      const cartRef = doc(FIRESTORE_DB, "carts", email);
 
       const cartSnapshot = await getDoc(cartRef);
 
@@ -94,7 +103,7 @@ const Cart = () => {
         );
 
         await setDoc(cartRef, {
-          userEmail: currentUser && currentUser.email,
+          userEmail: email,
           items: updatedCartItems,
         });
 
@@ -112,14 +121,17 @@ const Cart = () => {
   const clearCart = async () => {
     try {
       const currentUser = FIREBASE_AUTH.currentUser;
-      const cartRef: DocumentReference<DocumentData> = doc(
-        FIRESTORE_DB,
-        "carts",
-        (currentUser && currentUser.email) || ""
-      );
+      const email = currentUser?.email;
+
+      if (!email) {
+        Alert.alert("Error", "User not authenticated.");
+        return;
+      }
+
+      const cartRef = doc(FIRESTORE_DB, "carts", email);
 
       await setDoc(cartRef, {
-        userEmail: currentUser && currentUser.email,
+        userEmail: email,
         items: [],
       });
 
@@ -138,18 +150,38 @@ const Cart = () => {
   const placeOrder = async () => {
     try {
       const currentUser = FIREBASE_AUTH.currentUser;
-      const cartRef: DocumentReference<DocumentData> = doc(
-        FIRESTORE_DB,
-        "carts",
-        (currentUser && currentUser.email) || ""
-      );
+      const email = currentUser?.email;
+
+      if (!email) {
+        Alert.alert("Error", "User not authenticated.");
+        return;
+      }
+
+      const gst = (totalPrice * 0.1).toFixed(2);
+      const finalTotal = (totalPrice + parseFloat(gst)).toFixed(2);
+
+      const orderData = {
+        userEmail: email,
+        items: cartItems,
+        address: address,
+        totalPrice: totalPrice,
+        gst: gst,
+        finalTotal: finalTotal,
+        timestamp: new Date(),
+      };
+
+      await addDoc(collection(FIRESTORE_DB, "orders"), orderData);
+
+      const cartRef = doc(FIRESTORE_DB, "carts", email);
 
       await setDoc(cartRef, {
-        userEmail: currentUser && currentUser.email,
+        userEmail: email,
         items: [],
       });
 
       setCartItems([]);
+      setAddress("");
+      setShowModal(false);
 
       setShowLoader(true);
       setTimeout(() => {
@@ -164,6 +196,16 @@ const Cart = () => {
       Alert.alert("Error", "Failed to place order. Please try again later.");
     }
   };
+
+  useEffect(() => {
+    const output = cartItems.reduce((tprice: number, curr) => {
+      tprice = tprice + Number(curr.price);
+      return tprice;
+    }, 0);
+    setTotalPrice(output);
+  }, [cartItems]);
+
+  const gst = (totalPrice * 0.1).toFixed(2); // Assuming 10% GST
 
   const renderItem = ({ item }: { item: CartItem }) => (
     <View style={styles.cartItem}>
@@ -202,26 +244,30 @@ const Cart = () => {
             renderItem={renderItem}
             keyExtractor={(item) => item.name + item.description}
             contentContainerStyle={{ flexGrow: 1 }}
+            ListFooterComponent={
+              <View style={styles.footer}>
+                <Text style={styles.tprice}>
+                  Total Price: ${totalPrice.toFixed(2)}
+                </Text>
+                <TouchableOpacity
+                  onPress={clearCart}
+                  style={styles.clearCartButton}
+                >
+                  <Text style={{ color: "white", fontWeight: "bold" }}>
+                    Clear Cart
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => setShowModal(true)}
+                  style={styles.button}
+                >
+                  <Text style={{ color: "white", fontWeight: "bold" }}>
+                    Continue to Payment
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            }
           />
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              marginTop: 20,
-              marginBottom: 20,
-            }}
-          >
-            <TouchableOpacity onPress={clearCart} style={styles.button}>
-              <Text style={{ color: "white", fontWeight: "bold" }}>
-                Clear Cart
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={placeOrder} style={styles.button}>
-              <Text style={{ color: "white", fontWeight: "bold" }}>
-                Place Order
-              </Text>
-            </TouchableOpacity>
-          </View>
         </>
       ) : (
         !showLoader &&
@@ -239,13 +285,53 @@ const Cart = () => {
           <Text
             style={[
               styles.overlayText,
-              { color: "green", fontSize: 18, fontWeight: "bold" },
+              { color: "green", fontSize: 28, fontWeight: "bold" },
             ]}
           >
             Order placed successfully!
           </Text>
+          <ConfettiCannon count={200} origin={{ x: -10, y: 0 }} />
         </View>
       )}
+      <Modal
+        visible={showModal}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={() => setShowModal(false)}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalHeading}>Confirm Order</Text>
+            <Text style={styles.modalText}>
+              Total Price: ${totalPrice.toFixed(2)}
+            </Text>
+            <Text style={styles.modalText}>GST (10%): ${gst}</Text>
+            <Text style={styles.modalText}>
+              Final Total: ${(totalPrice + parseFloat(gst)).toFixed(2)}
+            </Text>
+            <TextInput
+              style={styles.addressInput}
+              placeholder="Enter your address"
+              value={address}
+              onChangeText={setAddress}
+            />
+            <TouchableOpacity
+              onPress={placeOrder}
+              style={styles.placeOrderButton}
+            >
+              <Text style={{ color: "white", fontWeight: "bold" }}>
+                Place Order
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => setShowModal(false)}
+              style={styles.closeButton}
+            >
+              <Text style={{ color: "white", fontWeight: "bold" }}>Close</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -307,6 +393,18 @@ const styles = StyleSheet.create({
     fontSize: 17,
     fontWeight: "bold",
     backgroundColor: "#C2410D",
+    width: 180,
+    color: "white",
+    padding: 10,
+    textAlign: "center",
+    marginBottom: 10,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  clearCartButton: {
+    fontSize: 17,
+    fontWeight: "bold",
+    backgroundColor: "#FF6347",
     width: 130,
     color: "white",
     padding: 10,
@@ -314,6 +412,9 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     alignItems: "center",
     justifyContent: "center",
+  },
+  footer: {
+    marginBottom: 20,
   },
   overlay: {
     flex: 1,
@@ -337,6 +438,71 @@ const styles = StyleSheet.create({
     height: 100,
     borderRadius: 10,
     marginRight: 10,
+  },
+  tprice: {
+    fontSize: 17,
+    fontWeight: "bold",
+    backgroundColor: "green",
+    width: 130,
+    color: "white",
+    padding: 10,
+    textAlign: "center",
+    marginBottom: 10,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: "flex-end",
+    backgroundColor: "rgba(0,0,0,0.5)",
+  },
+  modalContent: {
+    backgroundColor: "white",
+    padding: 20,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    alignItems: "center",
+  },
+  modalHeading: {
+    fontSize: 24,
+    fontWeight: "bold",
+    marginBottom: 10,
+  },
+  modalText: {
+    fontSize: 16,
+    marginVertical: 5,
+  },
+  addressInput: {
+    borderWidth: 1,
+    borderColor: "#ddd",
+    padding: 10,
+    width: "100%",
+    marginVertical: 10,
+    borderRadius: 5,
+  },
+  placeOrderButton: {
+    fontSize: 17,
+    fontWeight: "bold",
+    backgroundColor: "#28a745",
+    width: 180,
+    color: "white",
+    padding: 10,
+    textAlign: "center",
+    marginBottom: 10,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  closeButton: {
+    fontSize: 17,
+    fontWeight: "bold",
+    backgroundColor: "#FF6347",
+    width: 180,
+    color: "white",
+    padding: 10,
+    textAlign: "center",
+    marginBottom: 10,
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
 
