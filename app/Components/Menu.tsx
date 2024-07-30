@@ -4,7 +4,6 @@ import {
   Text,
   View,
   Image,
-  ScrollView,
   TouchableOpacity,
   Alert,
   ImageBackground,
@@ -39,8 +38,6 @@ const Menu = ({ navigation }: any) => {
         currentUser.email || ""
       );
 
-      Alert.alert("Success", "Item added to cart successfully!");
-
       const cartSnapshot = await getDoc(cartRef);
 
       let updatedCartItems = [];
@@ -57,6 +54,8 @@ const Menu = ({ navigation }: any) => {
       });
 
       setCartItems(updatedCartItems);
+
+      Alert.alert("Success", "Item added to cart successfully!");
     } catch (error) {
       console.error("Error adding item to cart:", error);
       Alert.alert(
@@ -67,7 +66,7 @@ const Menu = ({ navigation }: any) => {
   };
 
   return (
-    <View>
+    <View style={styles.container}>
       <ImageBackground
         source={{ uri: "https://i.ibb.co/SVt8JKy/bg.jpg" }}
         style={styles.backgroundImage}
@@ -92,10 +91,11 @@ const Menu = ({ navigation }: any) => {
 
         <View style={styles.menuContainer}>
           <FlatList
+            data={menu === "veg" ? vegetarianFoodItems : nonVegetarianFoodItems}
             renderItem={({ item }) => (
               <MenuItem item={item} addToCart={addToCart} />
             )}
-            data={menu === "veg" ? vegetarianFoodItems : nonVegetarianFoodItems}
+            keyExtractor={(item) => item.imageUrl} // Ensure each item has a unique 'id'
           />
         </View>
       </ImageBackground>
@@ -120,9 +120,14 @@ const MenuItem = ({ item, addToCart }: any) => (
   </View>
 );
 
-export default Menu;
-
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  backgroundImage: {
+    flex: 1,
+    resizeMode: "cover",
+  },
   header: {
     flexDirection: "row",
     justifyContent: "space-around",
@@ -183,8 +188,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
   },
-  backgroundImage: {
-    flex: 1,
-    resizeMode: "cover",
-  },
 });
+
+export default Menu;
