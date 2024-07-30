@@ -6,7 +6,7 @@ import {
   StyleSheet,
   TouchableOpacity,
 } from "react-native";
-import { MaterialCommunityIcons } from "@expo/vector-icons"; // Importing MaterialCommunityIcons from Expo
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 const Menu = ({ navigation }: any) => {
   return (

@@ -22,7 +22,6 @@ import {
   getDoc,
   addDoc,
   doc,
-  DocumentData,
 } from "firebase/firestore";
 import { FIREBASE_AUTH, FIRESTORE_DB } from "@/firebase.config";
 import ConfettiCannon from "react-native-confetti-cannon";
