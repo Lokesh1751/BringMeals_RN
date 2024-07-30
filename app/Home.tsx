@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { StyleSheet } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
@@ -9,6 +9,7 @@ import Menu from "./Components/Menu";
 import Feedbacks from "./Components/Feedbacks";
 import Help from "./Components/Help";
 import Cart from "./Components/Cart";
+import Myorders from "./Components/Myorders";
 
 const Stack = createStackNavigator();
 
@@ -49,6 +50,11 @@ const Index = () => {
         <Stack.Screen
           name="cart"
           component={Cart}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="orders"
+          component={Myorders}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>

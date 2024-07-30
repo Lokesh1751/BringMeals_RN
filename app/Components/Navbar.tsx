@@ -123,6 +123,12 @@ const Navbar = ({ nav }: any) => {
           <Icon name="cart" size={30} color="black" />
           Cart
         </Text>
+        {user && (
+          <Text style={styles.menuItem} onPress={() => nav.navigate("orders")}>
+            <Icon name="receipt" size={30} color="black" />
+            My Orders
+          </Text>
+        )}
         <Text style={styles.menuItem} onPress={() => nav.navigate("help")}>
           <Icon name="help-circle" size={32} color="black" />
           Help

@@ -67,7 +67,7 @@ const Menu = ({ navigation }: any) => {
   };
 
   return (
-    <ScrollView>
+    <View>
       <ImageBackground
         source={{ uri: "https://i.ibb.co/SVt8JKy/bg.jpg" }}
         style={styles.backgroundImage}
@@ -99,7 +99,7 @@ const Menu = ({ navigation }: any) => {
           />
         </View>
       </ImageBackground>
-    </ScrollView>
+    </View>
   );
 };
 

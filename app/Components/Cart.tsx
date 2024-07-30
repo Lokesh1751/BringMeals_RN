@@ -249,22 +249,24 @@ const Cart = () => {
                 <Text style={styles.tprice}>
                   Total Price: ${totalPrice.toFixed(2)}
                 </Text>
-                <TouchableOpacity
-                  onPress={clearCart}
-                  style={styles.clearCartButton}
-                >
-                  <Text style={{ color: "white", fontWeight: "bold" }}>
-                    Clear Cart
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => setShowModal(true)}
-                  style={styles.button}
-                >
-                  <Text style={{ color: "white", fontWeight: "bold" }}>
-                    Continue to Payment
-                  </Text>
-                </TouchableOpacity>
+                <View style={styles.buttonsAlignment}>
+                  <TouchableOpacity
+                    onPress={clearCart}
+                    style={styles.clearCartButton}
+                  >
+                    <Text style={{ color: "white", fontWeight: "bold" }}>
+                      Clear Cart
+                    </Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => setShowModal(true)}
+                    style={styles.button}
+                  >
+                    <Text style={{ color: "white", fontWeight: "bold" }}>
+                      Continue to Payment
+                    </Text>
+                  </TouchableOpacity>
+                </View>
               </View>
             }
           />
@@ -404,7 +406,7 @@ const styles = StyleSheet.create({
   clearCartButton: {
     fontSize: 17,
     fontWeight: "bold",
-    backgroundColor: "#FF6347",
+    backgroundColor: "#C2410D",
     width: 130,
     color: "white",
     padding: 10,
@@ -495,7 +497,7 @@ const styles = StyleSheet.create({
   closeButton: {
     fontSize: 17,
     fontWeight: "bold",
-    backgroundColor: "#FF6347",
+    backgroundColor: "#C2410D",
     width: 180,
     color: "white",
     padding: 10,
@@ -503,6 +505,11 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     alignItems: "center",
     justifyContent: "center",
+  },
+  buttonsAlignment: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
 });
 
